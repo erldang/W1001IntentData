@@ -13,7 +13,7 @@ import kr.ac.kumoh.s20170991.w1001intentdata.databinding.ActivityImageBinding
 class ImageActivity : AppCompatActivity(),OnClickListener {
     companion object{
         const val imageName = "image"
-        const val result = "result:"
+        const val resultName = "result"
 
         const val LIKE = 10
         const val DISLIKE = 20
@@ -29,26 +29,15 @@ class ImageActivity : AppCompatActivity(),OnClickListener {
         setContentView(binding.root)
 
         image = intent.getStringExtra(MainActivity.keyName)
+        val res = when (image) {
+            "don" -> R.drawable.don
+            "gobdori" -> R.drawable.gobdori
+            else -> R.drawable.ic_launcher_foreground
+        }
+        binding.imgGundam.setImageResource(res)
 
         binding.btnLike.setOnClickListener(this)
         binding.btnDislike.setOnClickListener(this)
-
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if (it.resultCode != RESULT_OK){
-                return@registerForActivityResult
-            }
-             val result = it.data?.getIntExtra(ImageActivity.result,ImageActivity.NON)
-            val str = when(result) {
-                ImageActivity.LIKE -> "좋아요"
-                ImageActivity.DISLIKE -> "싫어요"
-                else -> ""
-            }
-            val image = it.data?.getStringExtra(ImageActivity.imageName)
-            when(image){
-                "don" -> binding.btnLike.text = "돈까스 ($str)"
-                "gobdori" -> binding.btnDislike.text = "곱도리 ($str)"
-            }
-        }
     }
 
     override fun onClick(v: View?) {
@@ -59,7 +48,7 @@ class ImageActivity : AppCompatActivity(),OnClickListener {
             else -> NON
         }
         intent.putExtra(imageName, image)
-        intent.putExtra(result, value)
+        intent.putExtra(resultName, value)
         setResult(RESULT_OK, intent)
         finish()
     }
